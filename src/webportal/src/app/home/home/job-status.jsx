@@ -43,7 +43,7 @@ const StatusItem = ({className, icon, name, count, link}) => {
             <Icon className={ColorClassNames.neutralSecondary} iconName={icon} />
           </div>
           <div>
-            <div className={c(ColorClassNames.neutralSecondary, FontClassNames.large)} style={{width: '10rem', marginLeft: spacing.m}}>
+            <div className={c(ColorClassNames.neutralSecondary, FontClassNames.large)} style={{width: '100px', marginLeft: spacing.m}}>
               {name}
             </div>
           </div>
