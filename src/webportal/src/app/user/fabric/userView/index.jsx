@@ -17,7 +17,7 @@
 
 import React, {useState, useEffect, useMemo, useRef} from 'react';
 
-import {Fabric, Stack, initializeIcons, Modal, getTheme} from 'office-ui-fabric-react';
+import {Fabric, Stack, initializeIcons, getTheme} from 'office-ui-fabric-react';
 import {debounce} from 'lodash';
 
 import {MaskSpinnerLoading} from '../../../components/loading';
@@ -33,10 +33,8 @@ import Ordering from './Ordering';
 import Filter from './Filter';
 import Pagination from './Pagination';
 import Paginator from './Paginator';
-import InfoEditor from './InfoEditor';
-import {getAllUsersRequest, removeUserRequest, updateUserVcRequest, updateUserAccountRequest} from '../conn';
-
-require('./user-edit-modal-component.scss');
+import UserEditor from './UserEditor';
+import {getAllUsersRequest, getAllVcsRequest, removeUserRequest, updateUserVcRequest, updateUserAccountRequest} from '../conn';
 
 initTheme();
 initializeIcons();
@@ -84,6 +82,14 @@ export default function UserView() {
     });
   };
   useEffect(refreshAllUsers, []);
+
+  const [allVCs, setAllVCs] = useState([]);
+  const refreshAllVCs = () => {
+    getAllVcsRequest().then((data) => {
+      setAllVCs(Object.keys(data).sort());
+    });
+  };
+  useEffect(refreshAllVCs, []);
 
   const initialFilter = useMemo(() => {
     const filter = new Filter();
@@ -198,6 +204,7 @@ export default function UserView() {
   const context = {
     allUsers,
     refreshAllUsers,
+    allVCs,
     filteredUsers,
     ordering,
     setOrdering,
@@ -231,16 +238,14 @@ export default function UserView() {
           </Stack.Item>
         </Stack>
       </Fabric>
-      <Modal
+      <UserEditor
         isOpen={showEditInfo.isOpen}
-        styles={{main: [{maxWidth: '600px'}, t.w90]}}>
-        {showEditInfo.isOpen &&
-          <InfoEditor
-            user={showEditInfo.user}
-            updateUserAccount={updateUserAccount}
-            updateUserVC={updateUserVC}
-            hideEditUser={hideEditUser} />}
-      </Modal>
+        isCreate={false}
+        user={showEditInfo.user}
+        updateUserAccount={updateUserAccount}
+        updateUserVC={updateUserVC}
+        hideEditUser={hideEditUser}
+      />
       {loading.show && <MaskSpinnerLoading label={loading.text} />}
       {messageBox.text && <MessageBox text={messageBox.text} onDismiss={hideMessageBox} confirm={messageBox.confirm} onOK={messageBox.okCallback} onCancel={messageBox.cancelCallback} />}
     </Context.Provider>

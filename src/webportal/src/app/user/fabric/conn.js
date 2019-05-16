@@ -78,3 +78,8 @@ export const updateUserAccountRequest = async (username, password, admin) => {
     }),
   });
 };
+
+export const getAllVcsRequest = async () => {
+  const url = `${config.restServerUri}/api/v1/virtual-clusters`;
+  return await fetchWrapper(url);
+};
